@@ -1,4 +1,4 @@
-This is an implementation of COgflownet with four different tasks.
+This is an implementation of COFlownet with four different tasks.
 
 The first one is grid, to run this code, you can simply run.
 
