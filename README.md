@@ -18,7 +18,7 @@ The Third one is bioseq design, to run our offline version,
 python offline-amp.py
 ```
 
-The Last one is bioseq design, to run our offline version, you can simply run our scripts with default setting
+The Last one is item recommendation, to run our offline version, you can simply run our scripts with default setting
 
 ```
 sh simple_run.sh
