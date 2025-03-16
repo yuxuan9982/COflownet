@@ -60,10 +60,10 @@ parser.add_argument("--medoid_oracle_exp_constant", default=6, type=int)
 
 
 # Generator
-parser.add_argument("--gen_learning_rate", default=5e-5, type=float)
-parser.add_argument("--gen_Z_learning_rate", default=5e-3, type=float)
+parser.add_argument("--gen_learning_rate", default=1e-3, type=float)
+parser.add_argument("--gen_Z_learning_rate", default=1e-1, type=float)
 parser.add_argument("--gen_clip", default=10, type=float)
-parser.add_argument("--gen_num_iterations", default=20000, type=int) # Maybe this is too low?
+parser.add_argument("--gen_num_iterations", default=20000, type=int)
 parser.add_argument("--gen_episodes_per_step", default=16, type=int)
 parser.add_argument("--gen_num_hidden", default=128, type=int)
 parser.add_argument("--gen_reward_norm", default=1, type=float)
@@ -80,12 +80,12 @@ parser.add_argument("--gen_loss_eps", default=1e-5, type=float)
 parser.add_argument("--gen_random_action_prob", default=0.05, type=float)
 parser.add_argument("--gen_sampling_temperature", default=1., type=float)
 parser.add_argument("--gen_leaf_coef", default=25, type=float)
-parser.add_argument("--gen_data_sample_per_step", default=0, type=int)
+parser.add_argument("--gen_data_sample_per_step", default=8, type=int)
 # PG gen
 parser.add_argument("--gen_do_pg", default=0, type=int)
 parser.add_argument("--gen_pg_entropy_coef", default=1e-2, type=float)
 # learning partition Z explicitly
-parser.add_argument("--gen_do_explicit_Z", default=0, type=int)
+parser.add_argument("--gen_do_explicit_Z", default=1, type=int)
 parser.add_argument("--gen_model_type", default="mlp")
 
 # Proxy
@@ -100,7 +100,7 @@ parser.add_argument("--proxy_L2", default=1e-4, type=float)
 parser.add_argument("--proxy_num_per_minibatch", default=256, type=int)
 parser.add_argument("--proxy_early_stop_tol", default=5, type=int)
 parser.add_argument("--proxy_early_stop_to_best_params", default=0, type=int)
-parser.add_argument("--proxy_num_iterations", default=30000, type=int)
+parser.add_argument("--proxy_num_iterations", default=10000, type=int)
 parser.add_argument("--proxy_num_dropout_samples", default=25, type=int)
 
 #Offline
@@ -406,6 +406,15 @@ def mean_pairwise_distances(args, seqs):
     for pair in itertools.combinations(seqs, 2):
         dists.append(edit_dist(*pair))
     return np.mean(dists)
+
+def calc_noverty(seqs,d0):#note that use d0 instead of d
+    res = 0
+    for i in seqs:
+        mindis=0x3f3f3f3f
+        for j in d0:
+            mindis = min(mindis, edit_dist(i,j))
+        res+=mindis
+    return res/len(seqs)
 
 class Eva:
     def __init__(self, oracle):
